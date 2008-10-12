@@ -1,0 +1,40 @@
+.Dd October 12, 2008
+.Dt LMSGLOBALPROXY 3
+.Os
+.Sh NAME
+.Nm lms_proxyset, lms_proxyclear
+.Nd Set or clear global proxy information
+.Sh LIBRARY
+-lmsocket
+.Sh SYNOPSIS
+.In msocket.h
+.Ft int
+.Fo lms_proxyset
+.Fa "unsigned short type"
+.Fa "char *host"
+.Fa "int port"
+.Fc
+.Ft int
+.Fo lms_proxyclear
+.Fc
+.Sh DESCRIPTION
+The
+.Fn lms_proxset
+function sets a global proxy for use with any and all MSocket outbound connections.  All outbound connections without specific proxy settings in the MSocket object will go through this proxy.  
+This proxy can be overridden on a socket-by-socket basis by specifying specific proxies in the MSocket objects, however no connections can be made while this is set which use NO proxy.  
+.Pp
+The 
+.Fn lms_proxyclear
+function clears that setting, and returns MSocket to normal direct connectivity action.  Proxies can still be utilized by specifying them in the individual MSocket objects, but MSocket objects
+without specific proxy settings will not be proxied after this has been called.  
+.Sh SEE ALSO
+.Xr lms_init 3 ,
+.Xr lms_socket_connect 3
+.Sh BUGS
+Even when using a Socks5 proxy, DNS leaks can sometimes occur.  Normal outbound connections via 
+.Fn lms_socket_iconn 
+are proxied using a hostname, if one is specified, per the Socks5 protocol specification, however even after a call to 
+.Fn lms_setproxy 
+non-proxied DNS lookups can be made via the MSocket DNS API.  This can compromise anonymity when using Tor, and should be used cautiously by programmers.  
+When using a Socks5 proxy to establish anonymity, calls to MSocket DNS routines are discouraged so as not to leak information.  At some point in the future, 
+it is likely that an API for doing DNS resolution via a Tor daemon will be implemented.  
