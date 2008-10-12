@@ -191,6 +191,9 @@ int lms_throttle_expire()
 	lms_throttle_data *saved_d;
 	int num;
 
+#ifndef LMS_THROTTLE_ENABLE
+	return(0);
+#else
 	num = 0;
 	for (d = _lms_throttle_last; d; d = saved_d->prev)
 	{
@@ -209,6 +212,7 @@ int lms_throttle_expire()
 	}
 
 	return(num);
+#endif
 }
 
 /*
