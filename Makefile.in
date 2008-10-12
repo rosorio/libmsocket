@@ -23,11 +23,18 @@ all:	$(OBJ)
 build:	all
 
 install:	all
-	$(INSTALL) -m 0644 -o root msocket.h $(TARGET)/include/msocket.h
-	$(INSTALL) -m 0644 -o root msocketutils.h $(TARGET)/include/msocketutils.h
-	$(INSTALL) -m 0644 -o root libmsocket.so $(TARGET)/lib/libmsocket.so.0.2
-	$(INSTALL) -m 0644 -o root libmsocket.a $(TARGET)/lib/libmsocket.a
-	$(LN) -s $(TARGET)/lib/libmsocket.so.0.2 $(TARGET)/lib/libmsocket.so
+	$(INSTALL) -m 0644 msocket.h $(TARGET)/include/msocket.h
+	$(INSTALL) -m 0644 msocketutils.h $(TARGET)/include/msocketutils.h
+	$(INSTALL) -m 0644 libmsocket.so $(TARGET)/lib/libmsocket.so.0.2
+	$(INSTALL) -m 0644 libmsocket.a $(TARGET)/lib/libmsocket.a
+	$(LN) -fs $(TARGET)/lib/libmsocket.so.0.2 $(TARGET)/lib/libmsocket.so
+	$(INSTALL) -m 0644 man3/msocket.3 $(TARGET)/man/man3/msocket.3
+	$(INSTALL) -m 0644 man3/lmsglobalproxy.3 $(TARGET)/man/man3/lmsglobalproxy.3
+	$(INSTALL) -m 0644 man3/lmsglobalproxy.3 $(TARGET)/man/man3/lms_proxyset.3
+	$(INSTALL) -m 0644 man3/lmsglobalproxy.3 $(TARGET)/man/man3/lms_proxyclear.3
+	$(INSTALL) -m 0644 man3/lms_init.3 $(TARGET)/man/man3/lms_init.3
+	$(INSTALL) -m 0644 man3/lms_loop.3 $(TARGET)/man/man3/lms_loop.3
+	$(INSTALL) -m 0644 man3/lms_init.3 $(TARGET)/man/man3/lms_init.3
 
 example:
 	$(CC) $(CFLAGS) $(DFLAGS) -o lms-ex-server Example-server.c $(LFLAGS) -L./ -lmsocket
