@@ -1,0 +1,25 @@
+.Dd October 12, 2008
+.Dt LMS_LOOP 3
+.Os
+.Sh NAME
+.Nm lms_loop
+.Nd Run the regular MSocket checks
+.Sh LIBRARY
+-lmsocket
+.Sh SYNOPSIS
+.In msocket.h
+.Ft int
+.Fo lms_loop
+.Fc
+.Sh DESCRIPTION
+The
+.Fn lms_loop 
+function checks network I/O via the libevent multiplexer and runs other necessary operations such as checking for timeouts on sockets which are attempting to
+.Fn connect 
+out to remote hosts and such.  This function will currently always return 0, however in the future non-zero may be used as a return value to indicate an error condition.
+.Pp
+.Fn lms_loop
+should be called whenever your program is not doing anything else, normally at least once during each run of your program's main event loop.
+.Sh SEE ALSO
+.Xr lms_init 3 ,
+.Xr event 3
