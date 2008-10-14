@@ -38,7 +38,7 @@
 */
 
 # define LMS_VERSION			"0.5"
-# define LMS_VERSION_INT		0x000005
+# define LMS_VERSION_INT		0x000050
 
 # define LMS_LEN_V4ADDR			16
 # define LMS_LEN_V6ADDR			0
@@ -240,7 +240,7 @@ extern int lms_proxyclear(void);
 /* socket.c */
 extern void lms_socket_insertfd(MSocket *m);
 extern inline MSocket *lms_socket_findbyfd(int fd);
-extern MSocket *lms_socket_create(int16_t type);
+extern MSocket *lms_socket_create(uint8_t type);
 extern int lms_socket_close(MSocket *ptr);
 extern int lms_socket_destroy(MSocket *ptr);
 extern unsigned int lms_socket_destroytype(unsigned short type, short killad);

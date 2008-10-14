@@ -104,7 +104,7 @@ inline MSocket *lms_socket_findbyfd(int fd)
  * type = the type of the new socket to allocate
  *
  */
-MSocket *lms_socket_create(int16_t type)
+MSocket *lms_socket_create(uint8_t type)
 {
 	MSocket *ptr;
 
