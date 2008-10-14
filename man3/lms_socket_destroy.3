@@ -1,33 +1,28 @@
 .Dd October 12, 2008
-.Dt LMS_INIT 3
+.Dt LMS_SOCKET_DESTROY 3
 .Os
 .Sh NAME
-.Nm lms_init
-.Nd Initialize the MSocket library for use
+.Nm lms_socket_destroy
+.Nd Destroy a socket
 .Sh LIBRARY
 -lmsocket
 .Sh SYNOPSIS
 .In msocket.h
 .Ft int
-.Fo lms_init
-.Fa "unsigned char print"
+.Fo lms_socket_destroy
+.Fa "MSocket *ptr"
 .Fc
 .Sh DESCRIPTION
-The
-.Fn lms_init
-function initializes the MSocket library for use.  If the argument 
-.Fa print
-is >0, the function will print errors to stdout for debugging.  If it is 0, output will not be printed.
-It returns zero on success, and non-zero on failure.  If the function fails, it is not safe to use
-MSocket library functions.  
+This function frees up all memory associated with the MSocket object referenced by
+.Fa ptr
+and removes it from internal lists.  This function is used for cleaning up after a socket that closed from the remote end, or closing a socket which is listening.  
+To properly shut down and close an open connection socket, you should instead call 
+.Fn lms_socket_close
+which calls 
+.Fn lms_socket_destroy
+once it has finished cleanly shutting down the connection.  
 .Pp
-.Fn lms_init
-must be called before any other MSocket library functions can be safely utilized.  
+Returns 0 on success, or <0 to indicate an error condition.  
 .Sh SEE ALSO
-.Xr lms_loop 3
-.Sh BUGS
-There is no way to recover if 
-.Fn lms_init
-fails and returns non-zero.  This situation can be debugged via the 
-.Fa print
-argument, and failure is likely only in system-disaster events such as being entirely out of memory.  
+.Xr lms_socket_create 3 ,
+.Xr lms_socket_close 3

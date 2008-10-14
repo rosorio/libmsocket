@@ -1,0 +1,27 @@
+.Dd October 12, 2008
+.Dt LMS_SOCKET_CLOSE 3
+.Os
+.Sh NAME
+.Nm lms_socket_close
+.Nd Shutdown and close a socket, remove it from the MUX, and destroy it
+.Sh LIBRARY
+-lmsocket
+.Sh SYNOPSIS
+.In msocket.h
+.Ft int
+.Fo lms_socket_close
+.Fa "MSocket *ptr"
+.Fc
+.Sh DESCRIPTION
+This function cleanly shuts down (including protocol-specific procedures such as what is required by SSL/TLS) and closes the socket associated with 
+.Fa ptr ,
+removes it from the MUX, and finally calls 
+.Fn lms_socket_destroy
+to free up all memory associated with the MSocket object referenced by
+.Fa ptr
+and removes it from internal lists.  
+.Pp
+Returns 0 on success, or <0 to indicate an error condition.
+.Sh SEE ALSO
+.Xr lms_socket_create 3 ,
+.Xr lms_socket_destroy 3
