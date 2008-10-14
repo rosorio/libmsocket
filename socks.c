@@ -166,7 +166,16 @@ int lms_socks_hdshkwrite(MSocket *m)
 		in_addr_t addr;
 		lms_addrbytes *ab;
 
-		l = ;
+		addr = inet_addr(m->remotehost);
+		if (addr == INADDR_NONE)
+		{
+			l = (7 + strlen(m->remotehost));
+		}
+		else
+		{
+			l = 10;
+		}
+
 		outbuf = (unsigned char *)malloc(l);
 		if (!outbuf)
 		{
@@ -176,7 +185,6 @@ int lms_socks_hdshkwrite(MSocket *m)
 		outbuf[1] = 1;
 		outbuf[2] = 0;
 
-		addr = inet_addr(m->remotehost);
 		if (addr == INADDR_NONE)
 		{
 			unsigned short i;
@@ -203,6 +211,8 @@ int lms_socks_hdshkwrite(MSocket *m)
 			i++;
 			outbuf[i] = ab->portB;
 			i++;
+
+			free(ab);
 		}
 		else
 		{
