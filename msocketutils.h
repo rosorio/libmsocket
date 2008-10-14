@@ -44,21 +44,9 @@ extern int8_t lms_file_icanrw(struct stat *fs);
 extern int8_t lms_file_icanr(struct stat *fs);
 
 /* str.c */
-extern void utils_str_memnuke(volatile void *b, size_t sz);
-extern int utils_str_splitchr(const char *str, int c, char **mstr);
-extern int utils_str_splitnum(const char *str, int c, char **mstr, unsigned int num);
-extern unsigned int utils_str_cntchr(const char *str, int c);
-extern unsigned int utils_str_haschr(const char *str, int c);
-extern size_t utils_str_arraycat(char **src, char *dst, size_t dst_len);
-extern int utils_str_toupper(char *str);
-extern int utils_str_tolower(char *str);
-extern int utils_str_cnttochar(char *str, char c);
-extern inline void utils_str_freearray(void **array, unsigned char fa);
-extern void utils_str_copy(void *src, void *dst, size_t len);
-extern void utils_str_ocopy(void *src, void *dst, size_t len, unsigned int offset);
-extern unsigned int utils_str_ltochr(unsigned char *str, char chr, unsigned int maxlen);
-extern size_t utils_str_getlen(void *str);
-extern void free_array(void **ptr);
+extern void lms_str_memnuke(volatile void *b, size_t sz);
+extern void lms_str_copy(void *src, void *dst, size_t len);
+extern void lms_str_ocopy(void *src, void *dst, size_t len, unsigned int offset);
 
 /* base64.c */
   /* Note here: strlen() is used, so the string must be null-terminated to use this macro... */
@@ -72,8 +60,8 @@ extern unsigned char *lms_base64_decode(unsigned char *src, unsigned char *dst);
 extern int lms_passwords_encode(char *indata, char *outdata, unsigned short use_b64);
 extern int lms_passwords_check(char *chk, const char *real, unsigned short is_b64);
 extern size_t lms_passwords_len(unsigned short use_b64);
-extern int lms_passwords_encodemulti(char *indata, utils_passwords_data *outdata);
-extern int lms_passwords_checkmulti(char *chk, utils_passwords_data *real);
-extern int lms_passwords_converttomulti(unsigned char *indata, utils_passwords_data *outdata, unsigned short is_b64);
+extern int lms_passwords_encodemulti(char *indata, lms_passwords_data *outdata);
+extern int lms_passwords_checkmulti(char *chk, lms_passwords_data *real);
+extern int lms_passwords_converttomulti(unsigned char *indata, lms_passwords_data *outdata, unsigned short is_b64);
 
 #endif /* INCLUDED_MSOCKETUTILS_H */

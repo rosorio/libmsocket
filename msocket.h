@@ -185,7 +185,7 @@ struct _MSocket
 typedef struct _MSocket MSocket;
 
 /*
- * Password data storage structure used by utils_passwords_*multi()
+ * Password data storage structure used by lms_passwords_*multi()
  */
 struct _lms_passwords_data
 {

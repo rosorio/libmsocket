@@ -237,7 +237,7 @@ struct _MSocket
 typedef struct _MSocket MSocket;
 
 /*
- * Password data storage structure used by utils_passwords_*multi()
+ * Password data storage structure used by lms_passwords_*multi()
  */
 struct _lms_passwords_data
 {
@@ -401,20 +401,8 @@ extern int lms_rand_get(size_t bytes, unsigned char *dst);
 
 /* str.c */
 extern void lms_str_memnuke(volatile void *b, size_t sz);
-extern int lms_str_splitchr(const char *str, int c, char **mstr);
-extern int lms_str_splitnum(const char *str, int c, char **mstr, unsigned int num);
-extern unsigned int lms_str_cntchr(const char *str, int c);
-extern unsigned int lms_str_haschr(const char *str, int c);
-extern size_t lms_str_arraycat(char **src, char *dst, size_t dst_len);
-extern int lms_str_toupper(char *str);
-extern int lms_str_tolower(char *str);
-extern int lms_str_cnttochar(char *str, char c);
-extern inline void lms_str_freearray(void **array, unsigned char fa);
 extern void lms_str_copy(void *src, void *dst, size_t len);
 extern void lms_str_ocopy(void *src, void *dst, size_t len, unsigned int offset);
-extern unsigned int lms_str_ltochr(unsigned char *str, char chr, unsigned int maxlen);
-extern size_t lms_str_getlen(void *str);
-extern void free_array(void **ptr);
 extern lms_addrbytes *lms_str_getbytes(in_addr_t ip, int port);
 
 #endif /* INCLUDED_MSOCKETINTERNAL_H */
