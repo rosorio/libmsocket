@@ -40,8 +40,8 @@
 /* file.c */
 extern size_t lms_file_readln(int fd, char *buf, size_t buf_len);
 extern int lms_file_writepid(const char *fn, pid_t pid);
-extern short lms_file_icanrw(struct stat *fs);
-extern short lms_file_icanr(struct stat *fs);
+extern int8_t lms_file_icanrw(struct stat *fs);
+extern int8_t lms_file_icanr(struct stat *fs);
 
 /* str.c */
 extern void utils_str_memnuke(volatile void *b, size_t sz);

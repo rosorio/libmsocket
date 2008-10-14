@@ -2,32 +2,26 @@
 .Dt MSOCKET 3
 .Os
 .Sh NAME
-.Nm lms_init, 
-.Nd Initialize the MSocket library for use
+.Nm libmsocket
+.Nd MSocket library
 .Sh LIBRARY
 -lmsocket
 .Sh SYNOPSIS
 .In msocket.h
 .Ft int
-.Fo lms_init
-.Fa "unsigned char print"
+.Fo lms_version_int
+.Fc
+.Ft char *
+.Fo lms_version
 .Fc
 .Sh DESCRIPTION
-The
-.Fn lms_init
-function initializes the MSocket library for use.  If the argument 
-.Fa print
-is >0, the function will print errors to stdout for debugging.  If it is 0, output will not be printed.
-It returns zero on success, and non-zero on failure.  If the function fails, it is not safe to use
-MSocket library functions.  
+The 
+.Fn lms_version_int 
+function returns an integer representing the version of the library which is currently linked to the running program.
 .Pp
-.Fn lms_init
-must be called before any other MSocket library functions can be safely utilized.  
+The 
+.Fn lms_version_int 
+function returns a string pointer containing a human-readable form of the version of the library which is currently linked to the running program.
 .Sh SEE ALSO
+.Xr lms_init 3 ,
 .Xr lms_loop 3
-.Sh BUGS
-There is no way to recover if 
-.Fn lms_init
-fails and returns non-zero.  This situation can be debugged via the 
-.Fa print
-argument, and failure is likely only in system-disaster events such as being entirely out of memory.  

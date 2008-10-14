@@ -1,0 +1,39 @@
+.Dd October 12, 2008
+.Dt LMS_FILE_ICANR 3
+.Os
+.Sh NAME
+.Nm lms_file_icanr
+.Nd Check if the calling process can read from a given file
+.Sh LIBRARY
+-lmsocket
+.Sh SYNOPSIS
+.In msocketutils.h
+.Ft int8_t
+.Fo lms_file_icanr
+.Fa "struct stat *fs"
+.Fc
+.Sh DESCRIPTION
+This function validates access to a given file by way of examining the file permissions specified in a stat structure and based upon the privileges of the calling process including 
+uid, gid, and group memberships.  
+.Fn lms_file_icanr 
+will return 0 if you cannot read from the file, 1 if you can read from it, or <0 to indicate an error condition.  A pointer to a stat structure must be passed as the only argument, this
+pointer should be allocated by the calling function (using 
+.Fn malloc
+or
+.Fn calloc )
+and then filled by calling 
+.Fn stat , 
+.Fn fstat , or 
+.Fn lstat .  
+Finally, the pointer should be passed to 
+.Fn free
+when it is no longer needed by the calling function.  
+.Pp
+The function 
+.Fn lms_file_icanrw 
+can be used to determine if a file is both readable AND writeable by the calling process.  
+.Sh SEE ALSO
+.Xr lms_file_icanrw 3 ,
+.Xr stat 2 ,
+.Xr fstat 2 ,
+.Xr lstat 2

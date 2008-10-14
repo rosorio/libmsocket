@@ -155,7 +155,7 @@ int lms_file_writepid(const char *fn, pid_t pid)
  * fs = stat structure for the file I'm checking
  *
  */
-short lms_file_icanrw(struct stat *fs)
+int8_t lms_file_icanrw(struct stat *fs)
 {
 	uid_t myu;
 	gid_t myg;
@@ -241,7 +241,7 @@ short lms_file_icanrw(struct stat *fs)
  * fs = stat structure for the file I'm checking
  *
  */
-short lms_file_icanr(struct stat *fs)
+int8_t lms_file_icanr(struct stat *fs)
 {
 	uid_t myu;
 	gid_t myg;
