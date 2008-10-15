@@ -135,11 +135,21 @@ unsigned char *lms_base64_decode(unsigned char *src, unsigned char *dst)
 
 	pad = 0;
 	p = src;
+
+	buf = (unsigned char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+	while (!buf)
+	{
+		buf = (unsigned char *)malloc(3);
+	}
+#else
 	buf = (unsigned char *)malloc(3);
 	if (!buf)
 	{
 		return((unsigned char *)NULL);
 	}
+#endif /* LMS_HARDCORE_ALLOC */
+
 	buf[0] = 0;
 	buf[1] = 0;
 	buf[2] = 0;

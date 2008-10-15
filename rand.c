@@ -69,12 +69,20 @@ int lms_rand_get(size_t bytes, unsigned char *dst)
 		return(-1);
 	}
 
+	p = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+	while (!p)
+	{
+		p = (char *)malloc(bytes + 1);
+	}
+#else
 	p = (char *)malloc(bytes + 1);
 	if (!p)
 	{
 		close(fd);
 		return(-1);
 	}
+#endif /* LMS_HARDCORE_ALLOC */
 	memset(p, 0, (bytes + 1));
 
 	len = 0;

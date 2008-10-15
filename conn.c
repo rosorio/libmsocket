@@ -96,7 +96,7 @@ int lms_conn_accept(MSocket *l)
 	}
 #else
 	new->func_p = lms_conn_default_read;
-#endif
+#endif /* LMS_THROTTLE_ENABLE */
 
 	if (l->func_p)
 	{
@@ -212,7 +212,7 @@ int lms_throttle_expire()
 	}
 
 	return(num);
-#endif
+#endif /* LMS_THROTTLE_ENABLE */
 }
 
 /*
@@ -233,7 +233,7 @@ unsigned int lms_throttle_check(in_addr_t ip)
 
 #ifndef LMS_THROTTLE_ENABLE
 	return(0);
-#endif
+#endif /* LMS_THROTTLE_ENABLE */
 
 	for (d = _lms_throttle_last; d; d = d->prev)
 	{
@@ -274,7 +274,7 @@ lms_throttle_data *lms_throttle_setbad(MSocket *m)
 
 #ifndef LMS_THROTTLE_ENABLE
 	return((lms_throttle_data *)NULL);
-#endif
+#endif /* LMS_THROTTLE_ENABLE */
 
 	for (d = _lms_throttle_last; d; d = d->prev)
 	{
@@ -291,11 +291,19 @@ lms_throttle_data *lms_throttle_setbad(MSocket *m)
 
 	if (!d)
 	{
+		d = (lms_throttle_data *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+		while (!d)
+		{
+			d = (lms_throttle_data *)malloc(sizeof(lms_throttle_data));
+		}
+#else
 		d = (lms_throttle_data *)malloc(sizeof(lms_throttle_data));
 		if (!d)
 		{
 			return((lms_throttle_data *)NULL);
 		}
+#endif /* LMS_HARDCORE_ALLOC */
 		memset(d, 0, sizeof(lms_throttle_data));
 
 		if (!_lms_throttle_last)

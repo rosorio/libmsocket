@@ -86,17 +86,34 @@ int lms_mux_addfd(MSocket *ms, int fd, unsigned short t)
 		return(-1);
 	}
 
+	re = (struct event *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+	while (!re)
+	{
+		re = (struct event *)malloc(sizeof(struct event));
+	}
+#else
 	re = (struct event *)malloc(sizeof(struct event));
 	if (!re)
 	{
 		return(-1);
 	}
+#endif /* LMS_HARDCORE_ALLOC */
+
+	we = (struct event *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+	while (!we)
+	{
+		we = (struct event *)malloc(sizeof(struct event));
+	}
+#else
 	we = (struct event *)malloc(sizeof(struct event));
 	if (!we)
 	{
 		free(re);
 		return(-1);
 	}
+#endif /* LMS_HARDCORE_ALLOC */
 
 	if (ms)
 	{
