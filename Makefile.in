@@ -35,6 +35,14 @@ install:	all
 	$(INSTALL) -m 0644 man3/lms_init.3 $(TARGET)/man/man3/lms_init.3
 	$(INSTALL) -m 0644 man3/lms_loop.3 $(TARGET)/man/man3/lms_loop.3
 	$(INSTALL) -m 0644 man3/lms_rand_get.3 $(TARGET)/man/man3/lms_rand_get.3
+	$(INSTALL) -m 0644 man3/lms_base64_encode.3 $(TARGET)/man/man3/lms_base64_encode.3
+	$(INSTALL) -m 0644 man3/lms_base64_decode.3 $(TARGET)/man/man3/lms_base64_decode.3
+	$(INSTALL) -m 0644 man3/lms_file_icanr.3 $(TARGET)/man/man3/lms_file_icanr.3
+	$(INSTALL) -m 0644 man3/lms_file_icanrw.3 $(TARGET)/man/man3/lms_file_icanrw.3
+	$(INSTALL) -m 0644 man3/lms_socket_create.3 $(TARGET)/man/man3/lms_socket_create.3
+	$(INSTALL) -m 0644 man3/lms_socket_close.3 $(TARGET)/man/man3/lms_socket_close.3
+	$(INSTALL) -m 0644 man3/lms_socket_destroy.3 $(TARGET)/man/man3/lms_socket_destroy.3
+	$(INSTALL) -m 0644 man3/lms_str_memnuke.3 $(TARGET)/man/man3/lms_str_memnuke.3
 
 example:
 	$(CC) $(CFLAGS) $(DFLAGS) -o lms-ex-server Example-server.c $(LFLAGS) -L./ -lmsocket
