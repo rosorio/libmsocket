@@ -123,11 +123,21 @@ int lms_socks_hdshkwrite(MSocket *m)
 		size_t l;
 
 		l = 4;
+
+		outbuf = (unsigned char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+		while (!outbuf)
+		{
+			outbuf = (unsigned char *)malloc(l);
+		}
+#else
 		outbuf = (unsigned char *)malloc(l);
 		if (!outbuf)
 		{
 			return(-1);
 		}
+#endif /* LMS_HARDCORE_ALLOC */
+
 		outbuf[0] = 5;	/* Socks5 */
 		outbuf[1] = 2;	/* Support 2 authentication methods */
 		outbuf[2] = 0;	/* No authentication, or... */
@@ -146,11 +156,20 @@ int lms_socks_hdshkwrite(MSocket *m)
 		size_t l;
 
 		l = ;
+
+		outbuf = (unsigned char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+		while (!outbuf)
+		{
+			outbuf = (unsigned char *)malloc(l);
+		}
+#else
 		outbuf = (unsigned char *)malloc(l);
 		if (!outbuf)
 		{
 			return(-1);
 		}
+#endif /* LMS_HARDCORE_ALLOC */
 
 		lms_socket_appendq(m, outbuf, l);
 		lms_socket_flushq(m);
@@ -176,11 +195,20 @@ int lms_socks_hdshkwrite(MSocket *m)
 			l = 10;
 		}
 
+		outbuf = (unsigned char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+		while (!outbuf)
+		{
+			outbuf = (unsigned char *)malloc(l);
+		}
+#else
 		outbuf = (unsigned char *)malloc(l);
 		if (!outbuf)
 		{
 			return(-1);
 		}
+#endif /* LMS_HARDCORE_ALLOC */
+
 		outbuf[0] = 5;
 		outbuf[1] = 1;
 		outbuf[2] = 0;

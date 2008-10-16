@@ -89,7 +89,7 @@ int lms_dns_init()
 	{
 		_lms_dns_cache[i] = (lms_DNSCache *)NULL;
 	}
-#endif
+#endif /* LMS_NODNSCACHE */
 
 	while (RAND_status() != 1)
 	{
@@ -126,7 +126,7 @@ void lms_dns_cleancache()
 
 #ifdef LMS_NODNSCACHE
 	return;
-#endif
+#endif /* LMS_NODNSCACHE */
 
 	now = time(NULL);
 
@@ -753,7 +753,7 @@ lms_DNSCache *_lms_dns_findincache(const char *h, unsigned short type)
 
 #ifdef LMS_NODNSCACHE
 	return((lms_DNSCache *)NULL);
-#endif
+#endif /* LMS_NODNSCACHE */
 
 	for (i = 0; i < LMS_MAXDNSCACHE; ++i)
 	{
@@ -801,7 +801,7 @@ int _lms_dns_addcache(unsigned short type, char *ip, char *hostname, time_t toex
 
 #ifdef LMS_NODNSCACHE
 	return(0);
-#endif
+#endif /* LMS_NODNSCACHE */
 
 	if ((type != LMS_DNS_TYPE_A) && (type != LMS_DNS_TYPE_PTR))
 	{
@@ -897,7 +897,7 @@ int _lms_dns_remcache(lms_DNSCache *c, unsigned char rfl)
 {
 #ifdef LMS_NODNSCACHE
 	return(0);
-#endif
+#endif /* LMS_NODNSCACHE */
 
 	if (rfl > 0)
 	{

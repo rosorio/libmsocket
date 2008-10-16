@@ -57,11 +57,20 @@ size_t lms_file_readln(int fd, char *buf, size_t buf_len)
 		return(0);
 	}
 
+	tmpbuf = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+	while (!tmpbuf)
+	{
+		tmpbuf = (char *)malloc(2);
+	}
+#else
 	tmpbuf = (char *)malloc(2);
 	if (!tmpbuf)
 	{
 		return(0);
 	}
+#endif /* LMS_HARDCORE_ALLOC */
+
 	tmpbuf[0] = 0;
 	tmpbuf[1] = 0;
 
@@ -130,11 +139,20 @@ int lms_file_writepid(const char *fn, pid_t pid)
 		return(-1);
 	}
 
+	pid_str = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+	while (!pid_str)
+	{
+		pid_str = (char *)malloc(8);
+	}
+#else
 	pid_str = (char *)malloc(8);
 	if (!pid_str)
 	{
 		return(-1);
 	}
+#endif /* LMS_HARDCORE_ALLOC */
+
 	memset(pid_str, 0, 8);
 	snprintf(pid_str, 8, "%i\n", pid);
 	f = open(fn, O_WRONLY|O_CREAT);
@@ -204,11 +222,19 @@ int8_t lms_file_icanrw(struct stat *fs)
 			return(1);
 		}
 
+		glist = (gid_t *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+		while (!glist)
+		{
+			glist = (gid_t *)malloc(NGROUPS + 1);
+		}
+#else
 		glist = (gid_t *)malloc(NGROUPS + 1);
 		if (!glist)
 		{
 			return(-1);
 		}
+#endif /* LMS_HARDCORE_ALLOC */
 
 		if ((grpcnt = getgroups((NGROUPS + 1), glist)) < 0)
 		{
@@ -290,11 +316,19 @@ int8_t lms_file_icanr(struct stat *fs)
 			return(1);
 		}
 
+		glist = (gid_t *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+		while (!glist)
+		{
+			glist = (gid_t *)malloc(NGROUPS + 1);
+		}
+#else
 		glist = (gid_t *)malloc(NGROUPS + 1);
 		if (!glist)
 		{
 			return(-1);
 		}
+#endif /* LMS_HARDCORE_ALLOC */
 
 		if ((grpcnt = getgroups((NGROUPS + 1), glist)) < 0)
 		{
