@@ -343,6 +343,7 @@ extern int lms_proxyclear(void);
 extern int *lms_socket_init(void);
 extern void lms_socket_insertfd(MSocket *m);
 extern inline MSocket *lms_socket_findbyfd(int fd);
+extern void lms_socket_set(MSocket *s, uint32_t options);
 extern MSocket *lms_socket_create(uint8_t type);
 extern int lms_socket_close(MSocket *ptr);
 extern int lms_socket_destroy(MSocket *ptr);

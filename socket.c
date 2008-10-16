@@ -96,6 +96,18 @@ inline MSocket *lms_socket_findbyfd(int fd)
 }
 
 /*
+ * Set options on a given MSocket object
+ *
+ * s = the socket
+ * options = the bitfield of options to set
+ *
+ */
+void lms_socket_set(MSocket *s, uint32_t options)
+{
+	s->opts |= options;
+}
+
+/*
  * Create and allocate memory for a new MSocket object
  *
  * type = the type of the new socket to allocate

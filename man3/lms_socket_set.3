@@ -1,0 +1,25 @@
+.Dd October 12, 2008
+.Dt LMS_SOCKET_SET 3
+.Os
+.Sh NAME
+.Nm lms_socket_set
+.Nd Set options on a socket
+.Sh LIBRARY
+-lmsocket
+.Sh SYNOPSIS
+.In msocket.h
+.Ft void
+.Fo lms_socket_set
+.Fa "MSocket *s"
+.Fa "uint32_t options"
+.Fc
+.Sh DESCRIPTION
+.Sh SEE ALSO
+.Xr msocket 3 ,
+.Xr lms_socket_create 3
+.Sh CAVEATS
+The 
+.Fn lms_socket_set
+function should only be called immediately after 
+.Fn lms_socket_create .
+Other behavior can lead to unpredictable and often undesireable results.  
