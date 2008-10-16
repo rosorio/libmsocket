@@ -223,6 +223,7 @@ struct _MSocket
 	int (*func_w)(struct _MSocket *);	/* function to call when mux says write */
 	int (*func_e)(struct _MSocket *);	/* function to call when mux cries foul */
 	void (*func_p)(struct _MSocket *);	/* function to call when data is available in recvQ */
+	void (*func_d)(struct _MSocket_UDPMsg *);	/* function to call when data is available in recvQ from a datagram socket (gets passed a UDP msg structure) */
 	void (*func_a)(struct _MSocket *);	/* function to call when a new socket has been accepted on a listener */
 
 	void *appdata;				/* abstract application data */
@@ -232,6 +233,45 @@ struct _MSocket
 	uint16_t retries;			/* retry attempts for the reverse DNS lookup */
 };
 typedef struct _MSocket MSocket;
+
+/*
+ * MSocket_UDPMsg
+ */
+struct _MSocket_UDPMsg
+{
+	uint8_t type;				/* type (MSTYPE_*) */
+
+	char *localhost;			/* local address if INET/INET6 or path to file if UNIX */
+	int localport;				/* local port if INET/INET6 */
+	char *remotehost;			/* remote address if INET/INET6 */
+	int remoteport;				/* remote port if INET/INET6 */
+	char *remotedns;			/* DNS name of the remote host if INET/INET6 */
+	struct in_addr *addr;			/* in_addr structure for evdns and throttling API */
+
+	int fd;					/* file descriptor */
+	uint64_t flags;				/* flags on the socket/connection/etc (MSFLAG_*) */
+
+	size_t sendQ_sz;			/* allocated size of current sendQ */
+	size_t sendQ_len;			/* length of current sendQ */
+	unsigned char *sendQ;			/* queue of data to be written */
+	time_t last_send;			/* the time at which I last sent data */
+	size_t bytes_s;				/* bytes sent via this connection */
+
+	size_t recvQ_sz;			/* allocated size of current recvQ */
+	size_t recvQ_len;			/* length of current recvQ */
+	unsigned char *recvQ;			/* queue of data to be parsed */
+	time_t last_recv;			/* the time at which I last received data */
+	size_t bytes_r;				/* bytes received via this connection */
+
+	void (*func_p)(struct _MSocket *);	/* function to call when data is available in recvQ */
+
+	void *appdata;				/* abstract application data, copied from listener */
+
+	/* DNS (temp) crap down here... */
+	char *possible_revdns;			/* possible reverse dns, but not yet confirmed */
+	uint16_t retries;			/* retry attempts for the reverse DNS lookup */
+};
+typedef struct _MSocket_UDPMsg MSocket_UDPMsg;
 
 /*
  * Password data storage structure used by lms_passwords_*multi()
@@ -355,6 +395,7 @@ extern int lms_socket_uaccept(MSocket *s, MSocket *new);
 extern int lms_socket_iconn(MSocket *s);
 extern int lms_socket_idgram(MSocket *s);
 extern int lms_socket_read(MSocket *m);
+extern int lms_socket_dreply(MSocket_UDPMsg *um, unsigned char *rpl, size_t rpl_len);
 extern int lms_socket_flushq(MSocket *m);
 extern int lms_socket_appendq(MSocket *m, unsigned char *data, size_t data_len);
 extern int lms_socket_clearsq(MSocket *m, ssize_t len);

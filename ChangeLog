@@ -1,6 +1,6 @@
 +++ Changes from version 0.4 to version 0.5
  * UNIX domain sockets should be working now with LMSTYPE_LOCALLISTEN and LMSTYPE_LOCALCONN
- * UDP support should work
+ * Some UDP support; you can now receive UDP messages on a socket initialized with lms_socket_idgram() and reply to them via lms_socket_dreply()
  * Add SOCKS5 proxy support (LMSOPTION_SOCKS)
  * Manual pages for each function are now available
  * More appropriate, less-restrictive licensing terms

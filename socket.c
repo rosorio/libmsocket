@@ -368,7 +368,11 @@ int lms_socket_destroy(MSocket *ptr)
 
 		if (ptr->type == LMSTYPE_LOCALLISTEN)
 		{
-			_lms_socket_unlinkuds(ptr->fd);
+			/* _lms_socket_unlinkuds(ptr->fd); */
+			if (ptr->localhost && (ptr->localhost[0] != '\0'))
+			{
+				unlink(ptr->localhost);
+			}
 		}
 	}
 	else
@@ -976,7 +980,16 @@ int lms_socket_idgram(MSocket *s)
 
 	memset(&s_local_host, 0, sizeof(s_local_host));
 	s_local_host.sin_family = AF_INET;
-	s_local_host.sin_port = htons(s->localport);
+	if (s->localport > 0)
+	{
+		s_local_host.sin_port = htons(s->localport);
+	}
+	else if ((s->remoteport <= 0) || !s->remotehost || (s->remotehost[0] == 0))
+	{
+		/* Only an outbound socket can fail to specify a port. */
+		errno = EINVAL;
+		return(-1);
+	}
 	if (!s->localhost || (s->localhost[0] == 0))
 	{
 		s_local_host.sin_addr.s_addr = INADDR_ANY;
@@ -1140,6 +1153,42 @@ int lms_socket_read(MSocket *m)
 	m->last_recv = time(NULL);
 
 	free(c);
+	return(0);
+}
+
+/*
+ * lms_socket_dreply() sends a reply to a UDP message
+ *
+ * um = the UDPMsg
+ * rpl = the buffer containing the reply
+ * rpl_len = the length of the reply
+ *
+ */
+int lms_socket_dreply(MSocket_UDPMsg *um, unsigned char *rpl, size_t rpl_len)
+{
+	struct sockaddr_in sa;
+
+	if (!um)
+	{
+		errno = EINVAL;
+		return(-1);
+	}
+	else if (!rpl || (rpl_len <= 0))
+	{
+		errno = EINVAL;
+		return(-1);
+	}
+
+	memset(&sa, 0, sizeof(sa));
+	sa.sin_family = AF_INET;
+	sa.sin_port = htons(um->remoteport);
+	sa.sin_addr.s_addr = inet_addr(um->remotehost);
+
+	if (sendto(um->fd, rpl, rpl_len, 0, (const struct sockaddr *)&sa, sizeof(struct sockaddr_in)) < 0)
+	{
+		return(-1);
+	}
+
 	return(0);
 }
 
@@ -1372,6 +1421,7 @@ int _lms_socket_unlinkuds(int fd)
 {
 	char *fspath;
 	struct sockaddr_un *s_local_host;
+	socklen_t slh_sz;
 
 	fspath = (char *)NULL;
 #ifdef LMS_HARDCORE_ALLOC
