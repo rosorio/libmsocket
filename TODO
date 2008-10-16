@@ -1,0 +1,5 @@
+Planned for version 0.6
+ * Tor DNS proxying support when a global proxy of type LMS_PROXY_TOR is specified and libmsocket is compiled with Tor support
+
+Planned for completion prior to 1.0 release
+ * Full IPv6 support

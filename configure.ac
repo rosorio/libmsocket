@@ -32,9 +32,9 @@ AC_ARG_ENABLE(sslv2,
 [AC_HELP_STRING([--enable-sslv2],[NOT RECOMMENDED: enable this if you have to support SSL v2])],
 [AC_DEFINE([LMS_SSL_V2], [1])],
 [unusedvariable="0"])
-AC_ARG_ENABLE(tordns,
-[AC_HELP_STRING([--enable-tordns],[Enable DNS resolution via Tor])],
-[AC_DEFINE([LMS_DNS_ENABLETOR], [1])],
+AC_ARG_ENABLE(tor,
+[AC_HELP_STRING([--enable-tor],[Enable support for Tor anonymous proxying])],
+[AC_DEFINE([LMS_ENABLE_TOR], [1])],
 [unusedvariable="0"])
 AC_ARG_ENABLE(hcalloc,
 [AC_HELP_STRING([--enable-hcalloc],[Enable hardcore allocation])],

@@ -10,9 +10,6 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the Mr. Harris nor the names of his contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY Mr. Harris AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -49,7 +46,7 @@ int lms_loop()
 		lms_dns_cleancache();
 #ifdef LMS_THROTTLE_ENABLE
 		lms_throttle_expire();
-#endif
+#endif /* LMS_THROTTLE_ENABLE */
 		_lms_loop_lastrun = time(NULL);
 	}
 
@@ -128,13 +125,39 @@ char *lms_version()
  */
 int lms_proxyset(unsigned short type, char *host, int port)
 {
+	in_addr_t proxyaddr;
+
 	if (!host || (type <= 0) || (port <= 0))
 	{
 		errno = EINVAL;
 		return(-1);
 	}
 
-	lms_proxy_ip = ;
+	proxyaddr = inet_addr(host);
+	if (proxyaddr == INADDR_NONE)
+	{
+		/* Perform DNS lookup */
+		return(-1);	/* Instead of just bailing - for now, let the caller do the DNS lookup - later, support a DNS name. */
+	}
+	else
+	{
+		lms_proxy_ip = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+		while (!lms_proxy_ip)
+		{
+			lms_proxy_ip = (char *)malloc();
+		}
+#else
+		lms_proxy_ip = (char *)malloc(LMS_LEN_V4ADDR + 1);
+		if (!lms_proxy_ip)
+		{
+			return(-1);
+		}
+#endif /* LMS_HARDCORE_ALLOC */
+
+		memset(lms_proxy_ip, 0, (LMS_LEN_V4ADDR + 1));
+		snprintf(lms_proxy_ip, (LMS_LEN_V4ADDR + 1), "%s", host);
+	}
 
 	lms_proxy_port = port;
 	lms_proxy_type = type;
