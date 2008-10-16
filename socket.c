@@ -117,7 +117,7 @@ MSocket *lms_socket_create(uint8_t type)
 	{
 		return((MSocket *)NULL);
 	}
-#endif
+#endif /* LMS_HARDCORE_ALLOC */
 	memset(ptr, 0, sizeof(MSocket));
 
 	ptr->type = type;
@@ -544,7 +544,7 @@ unsigned int lms_socket_housekeeping()
 			ka = 3600;
 #else
 			ka = LMS_MAXKEEPALIVE;
-#endif
+#endif /* (LMS_MAXKEEPALIVE < 3600) */
 		}
 		else
 		{
@@ -1075,11 +1075,11 @@ int lms_socket_read(MSocket *m)
 	while (1)
 	{
 #ifdef MSG_DONTWAIT
-# define _SERVER_SOCKET_RECVFLAGS		MSG_DONTWAIT
+# define _LMS_SOCKET_RECVFLAGS		MSG_DONTWAIT
 #else
-# define _SERVER_SOCKET_RECVFLAGS		0
-#endif
-		recvrv = recv(m->fd, c, bufsz, _SERVER_SOCKET_RECVFLAGS);
+# define _LMS_SOCKET_RECVFLAGS		0
+#endif /* MSG_DONTWAIT */
+		recvrv = recv(m->fd, c, bufsz, _LMS_SOCKET_RECVFLAGS);
 
 		if (recvrv < 0)
 		{
@@ -1171,7 +1171,7 @@ int lms_socket_flushq(MSocket *m)
 		errno = EDOOFUS;
 #else
 		errno = EINVAL;
-#endif
+#endif /* EDOOFUS */
 		return(-1);
 	}
 
@@ -1237,7 +1237,7 @@ int lms_socket_appendq(MSocket *m, unsigned char *data, size_t data_len)
 			errno = EDOOFUS;
 #else
 			errno = EINVAL;
-#endif
+#endif /* EDOOFUS */
 			return(-1);
 		}
 

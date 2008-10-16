@@ -50,7 +50,7 @@
 #  include <sys/endian.h>
 # elif defined(HAVE_MACHINE_ENDIAN_H)
 #  include <machine/endian.h>
-# endif
+# endif /* defined(HAVE_SYS_ENDIAN_H) ; defined(HAVE_MACHINE_ENDIAN_H) */
 
 /* libevent and OpenSSL includes */
 # include <event.h>
@@ -76,10 +76,10 @@
 
 # if !defined(LMS_MAXDNSCACHE) || (LMS_MAXDNSCACHE <= 0)
 #  define LMS_NODNSCACHE
-# endif
+# endif /* !defined(LMS_MAXDNSCACHE) || (LMS_MAXDNSCACHE <= 0) */
 # ifdef LMS_NODNSCACHE
 #  define LMS_MAXDNSCACHE		0
-# endif
+# endif /* LMS_NODNSCACHE */
 
 # define LMS_DNS_TYPE_NONE		0
 # define LMS_DNS_TYPE_A			1

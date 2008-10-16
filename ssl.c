@@ -399,7 +399,7 @@ int lms_ssl_unclean(MSocket *m)
 	{
 		curopts |= SSL_OP_NO_SSLv2;
 	}
-#endif
+#endif /* LMS_SSLV2 */
 	if ((m->flags & LMSFLG_OUTBOUND) && (curopts & SSL_OP_CIPHER_SERVER_PREFERENCE))
 	{
 		curopts &= ~SSL_OP_CIPHER_SERVER_PREFERENCE;
@@ -683,7 +683,7 @@ int lms_ssl_flushq(MSocket *m)
 		errno = EDOOFUS;
 #else
 		errno = EINVAL;
-#endif
+#endif /* EDOOFUS */
 		return(-1);
 	}
 
@@ -795,7 +795,7 @@ char *lms_ssl_getclientinfo(MSocket *m)
 	{
 		return((char *)NULL);
 	}
-#endif
+#endif /* LMS_HARDCORE_ALLOC */
 	memset(infobuf, 0, 48);
 
 	clientcipher = SSL_get_current_cipher(_lms_ssl_list[m->fd]);
@@ -847,7 +847,7 @@ lms_ssl_store *_lms_ssl_loadfiles(X509 *ca, const char *path)
 		free(privpath);
 		return((lms_ssl_store *)NULL);
 	}
-#endif
+#endif /* LMS_HARDCORE_ALLOC */
 	memset(ks, 0, sizeof(lms_ssl_store));
 
 	/*

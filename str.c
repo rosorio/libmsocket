@@ -31,11 +31,11 @@
 # include <sys/endian.h>
 #elif defined(HAVE_MACHINE_ENDIAN_H)
 # include <machine/endian.h>
-#endif
+#endif /* defined(HAVE_SYS_ENDIAN_H) ; defined(HAVE_MACHINE_ENDIAN_H) */
 
 #if !defined(BYTE_ORDER)
 # error "BYTE_ORDER is not defined - please send info about your platform and grep for it to let me know what file needs to be included."
-#endif
+#endif /* !defined(BYTE_ORDER) */
 
 
 /*
@@ -150,7 +150,7 @@ lms_addrbytes *lms_str_getbytes(in_addr_t ip, int port)
 		a->portA = ;
 		a->portB = ;
 	}
-#endif
+#endif /* (BYTE_ORDER == BIG_ENDIAN) */
 
 	return(a);
 }
