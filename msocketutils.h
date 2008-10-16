@@ -43,7 +43,7 @@ extern int8_t lms_file_icanr(struct stat *fs);
 /* str.c */
 extern void lms_str_memnuke(volatile void *b, size_t sz);
 extern void lms_str_copy(void *src, void *dst, size_t len);
-extern void lms_str_ocopy(void *src, void *dst, size_t len, unsigned int offset);
+extern void lms_str_ocopy(void *src, void *dst, size_t len, uint32_t offset);
 
 /* base64.c */
   /* Note here: strlen() is used, so the string must be null-terminated to use this macro... */

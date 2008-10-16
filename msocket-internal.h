@@ -400,7 +400,7 @@ extern int lms_rand_get(size_t bytes, unsigned char *dst);
 /* str.c */
 extern void lms_str_memnuke(volatile void *b, size_t sz);
 extern void lms_str_copy(void *src, void *dst, size_t len);
-extern void lms_str_ocopy(void *src, void *dst, size_t len, unsigned int offset);
+extern void lms_str_ocopy(void *src, void *dst, size_t len, uint32_t offset);
 extern lms_addrbytes *lms_str_getbytes(in_addr_t ip, int port);
 
 #endif /* INCLUDED_MSOCKETINTERNAL_H */

@@ -33,6 +33,8 @@
 static MSocket *_lms_socket_list[LMS_HIGHSOCK];
 static MSocket *_lms_socket_corpses[LMS_HIGHSOCK];
 
+static int _lms_socket_unlinkuds(int fd);
+
 
 /*
  * Initialize the list of MSocket objects in _lms_socket_list
@@ -144,7 +146,7 @@ MSocket *lms_socket_create(uint8_t type)
 	ptr->recvQ_len = 0;
 	ptr->recvQ = (unsigned char *)NULL;
 
-	if (type == LMSTYPE_LOCALLISTEN)
+	if ((type == LMSTYPE_LOCALLISTEN) || (type == LMSTYPE_LOCALCLIENT))
 	{
 		ptr->localhost = (char *)malloc(MAXPATHLEN);
 		if (!ptr->localhost)
@@ -343,34 +345,30 @@ int lms_socket_destroy(MSocket *ptr)
 
 	/*
 	 * One thing worth noting is that appdata needs to be taken care of elsewhere before
-	 * calling lms_socket_destroy() - some things, like interface/local utilize appdata
-	 * as the only place where a pointer is stored, so a failure to deal with appdata could
-	 * result in memory leaks in such places.
+	 * calling lms_socket_destroy()
 	 */
 
 	if (!(ptr->flags & LMSFLG_WAITDESTROY))
 	{
 		_lms_socket_list[ptr->fd] = (MSocket *)NULL;
 
-		if (ptr->type != LMSTYPE_LOCALLISTEN)
+		if (ptr->flags & LMSFLG_CONNECTED)
 		{
-			/*
-			 * interface/local.c has its own method of dealing with closing the socket
-			 * which also includes calling unlink() on the file and such
-			 */
-			if (ptr->flags & LMSFLG_CONNECTED)
-			{
-				/* stream */
-				shutdown(ptr->fd, SHUT_RDWR);
-				ptr->flags &= ~LMSFLG_CONNECTED;
-			}
-			else if (ptr->flags & LMSFLG_READY)
-			{
-				/* dgram */
-				shutdown(ptr->fd, SHUT_RDWR);
-				ptr->flags &= ~LMSFLG_READY;
-			}
-			close(ptr->fd);
+			/* stream */
+			shutdown(ptr->fd, SHUT_RDWR);
+			ptr->flags &= ~LMSFLG_CONNECTED;
+		}
+		else if (ptr->flags & LMSFLG_READY)
+		{
+			/* dgram */
+			shutdown(ptr->fd, SHUT_RDWR);
+			ptr->flags &= ~LMSFLG_READY;
+		}
+		close(ptr->fd);
+
+		if (ptr->type == LMSTYPE_LOCALLISTEN)
+		{
+			_lms_socket_unlinkuds(ptr->fd);
 		}
 	}
 	else
@@ -1361,5 +1359,63 @@ int lms_socket_freerq(MSocket *m)
 	free(m->recvQ);
 	m->recvQ = (unsigned char *)NULL;
 
+	return(0);
+}
+
+/*
+ * Call unlink() on a listening unix domain socket
+ *
+ * fd = the file descriptor of the socket
+ *
+ */
+int _lms_socket_unlinkuds(int fd)
+{
+	char *fspath;
+	struct sockaddr_un *s_local_host;
+
+	fspath = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+	while (!fspath)
+	{
+		fspath = (char *)malloc(MAXPATHLEN);
+	}
+#else
+	fspath = (char *)malloc(MAXPATHLEN);
+	if (!fspath)
+	{
+		return(-1);
+	}
+#endif /* LMS_HARDCORE_ALLOC */
+	memset(fspath, 0, MAXPATHLEN);
+
+	s_local_host = (struct sockaddr_un *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+	while (!s_local_host)
+	{
+		s_local_host = (struct sockaddr_un *)malloc(sizeof(struct sockaddr_un));
+	}
+#else
+	s_local_host = (struct sockaddr_un *)malloc(sizeof(struct sockaddr_un));
+	if (!s_local_host)
+	{
+		free(fspath);
+		return(-1);
+	}
+#endif /* LMS_HARDCORE_ALLOC */
+	memset(s_local_host, 0, sizeof(s_local_host));
+
+	slh_sz = (socklen_t)sizeof(s_local_host);
+	if (getsockname(fd, (struct sockaddr *)s_local_host, &slh_sz) >= 0)
+	{
+		strncpy(fspath, s_local_host->sun_path, MAXPATHLEN);
+	}
+	free(s_local_host);
+
+	if (fspath[0] != 0)
+	{
+		unlink(fspath);
+	}
+
+	free(fspath);
 	return(0);
 }

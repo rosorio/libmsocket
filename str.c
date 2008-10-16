@@ -71,7 +71,7 @@ void lms_str_copy(void *src, void *dst, size_t len)
 {
 	char *x_src;
 	char *x_dst;
-	register unsigned int i;
+	register uint32_t i;
 
 	/* Wait... isn't this what f'ing memcpy() does? */
 	if (!src || !dst || (len == 0) || (src == dst))
@@ -97,11 +97,11 @@ void lms_str_copy(void *src, void *dst, size_t len)
  * offset = the byte in src at which to begin copying
  *
  */
-void lms_str_ocopy(void *src, void *dst, size_t len, unsigned int offset)
+void lms_str_ocopy(void *src, void *dst, size_t len, uint32_t offset)
 {
 	char *x_src;
 	char *x_dst;
-	register unsigned int i;
+	register uint32_t i;
 
 	if (!src || !dst || (len == 0) || (src == dst))
 	{
