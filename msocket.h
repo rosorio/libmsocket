@@ -87,16 +87,17 @@
 
 # define LMSPROXY_NONE			0		/* No proxy */
 # define LMSPROXY_SOCKS5		1		/* Socks5 proxy */
-# define LMSPROXY_HTTP			2		/* HTTP proxy */
+# define LMSPROXY_TOR			2		/* Socks5 proxy (Tor) */
+# define LMSPROXY_HTTP			3		/* HTTP proxy */
 
 # define LMS_MAXDNSCACHE		30000
 
 # if !defined(LMS_MAXDNSCACHE) || (LMS_MAXDNSCACHE <= 0)
 #  define LMS_NODNSCACHE
-# endif
+# endif /* !defined(LMS_MAXDNSCACHE) || (LMS_MAXDNSCACHE <= 0) */
 # ifdef LMS_NODNSCACHE
 #  define LMS_MAXDNSCACHE		0
-# endif
+# endif /* LMS_NODNSCACHE */
 
 # define LMS_DNS_TYPE_NONE		0
 # define LMS_DNS_TYPE_A			1
