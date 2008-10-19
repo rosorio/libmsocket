@@ -59,11 +59,19 @@ int lms_passwords_encode(char *indata, char *outdata, unsigned short use_b64)
 		return(-1);
 	}
 
+	ver = (unsigned char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+	while (!ver)
+	{
+		ver = (unsigned char *)malloc(2);
+	}
+#else
 	ver = (unsigned char *)malloc(2);
 	if (!ver)
 	{
 		return(-1);
 	}
+#endif /* LMS_HARDCORE_ALLOC */
 	if (use_b64 > 0)
 	{
 		ver[0] = LMS_PASSWORDS_PRTVER;
@@ -75,14 +83,29 @@ int lms_passwords_encode(char *indata, char *outdata, unsigned short use_b64)
 	ver[1] = 0;
 
 	prelen = strlen(indata) + 9;				/* length of string + 8 byte salt + null-terminating byte */
+	prehash = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+	while (!prehash)
+	{
+		prehash = (char *)malloc(prelen);
+	}
+#else
 	prehash = (char *)malloc(prelen);
 	if (!prehash)
 	{
 		free(ver);
 		return(-1);
 	}
+#endif /* LMS_HARDCORE_ALLOC */
 	memset(prehash, 0, prelen);
 
+	salt = (unsigned char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+	while (!salt)
+	{
+		salt = (unsigned char *)malloc(9);
+	}
+#else
 	salt = (unsigned char *)malloc(9);
 	if (!salt)
 	{
@@ -90,9 +113,17 @@ int lms_passwords_encode(char *indata, char *outdata, unsigned short use_b64)
 		free(prehash);
 		return(-1);
 	}
+#endif /* LMS_HARDCORE_ALLOC */
 	memset(salt, 0, 9);
 	lms_rand_get(8, salt);
 
+	hashed = (unsigned char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+	while (!hashed)
+	{
+		hashed = (unsigned char *)malloc(33);
+	}
+#else
 	hashed = (unsigned char *)malloc(33);
 	if (!hashed)
 	{
@@ -101,6 +132,7 @@ int lms_passwords_encode(char *indata, char *outdata, unsigned short use_b64)
 		free(salt);
 		return(-1);
 	}
+#endif /* LMS_HARDCORE_ALLOC */
 	memset(hashed, 0, 33);
 
 	snprintf(prehash, prelen, "%s%s", salt, indata);
@@ -117,6 +149,13 @@ int lms_passwords_encode(char *indata, char *outdata, unsigned short use_b64)
 		ver[0] = LMS_PASSWORDS_PRTVER;
 
 		b64hash_len = 65;				/* (sha256=32 * 2) + 1 for null-terminating byte */
+		b64hash = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+		while (!b64hash)
+		{
+			b64hash = (char *)malloc(b64hash_len);
+		}
+#else
 		b64hash = (char *)malloc(b64hash_len);
 		if (!b64hash)
 		{
@@ -125,10 +164,18 @@ int lms_passwords_encode(char *indata, char *outdata, unsigned short use_b64)
 			free(ver);
 			return(-1);
 		}
+#endif /* LMS_HARDCORE_ALLOC */
 		memset(b64hash, 0, b64hash_len);
 		lms_base64_encode(hashed, (unsigned char *)b64hash, 32);
 
 		b64salt_len = 17;				/* (8 * 2) + 1 for null-terminating byte */
+		b64salt = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+		while (!b64salt)
+		{
+			b64salt = (char *)malloc(b64salt_len);
+		}
+#else
 		b64salt = (char *)malloc(b64salt_len);
 		if (!b64salt)
 		{
@@ -138,6 +185,7 @@ int lms_passwords_encode(char *indata, char *outdata, unsigned short use_b64)
 			free(ver);
 			return(-1);
 		}
+#endif /* LMS_HARDCORE_ALLOC */
 		memset(b64salt, 0, b64salt_len);
 		lms_base64_encode(salt, (unsigned char *)b64salt, 8);
 
@@ -207,17 +255,34 @@ int lms_passwords_check(char *chk, const char *real, unsigned short is_b64)
 		return(-1);
 	}
 
+	ver = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+	while (!ver)
+	{
+		ver = (char *)malloc(2);
+	}
+#else
 	ver = (char *)malloc(2);
 	if (!ver)
 	{
 		return(-1);
 	}
+#endif /* LMS_HARDCORE_ALLOC */
+
+	salt = (unsigned char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+	while (!salt)
+	{
+		salt = (unsigned char *)malloc(9);
+	}
+#else
 	salt = (unsigned char *)malloc(9);
 	if (!salt)
 	{
 		free(ver);
 		return(-1);
 	}
+#endif /* LMS_HARDCORE_ALLOC */
 
 	if (!is_b64)
 	{
@@ -262,6 +327,13 @@ int lms_passwords_check(char *chk, const char *real, unsigned short is_b64)
 		salt[8] = 0;
 
 		prelen = strlen(chk) + 9;				/* length of string + 8 byte salt + null-terminating byte */
+		prehash = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+		while (!prehash)
+		{
+			prehash = (char *)malloc(prelen);
+		}
+#else
 		prehash = (char *)malloc(prelen);
 		if (!prehash)
 		{
@@ -269,7 +341,16 @@ int lms_passwords_check(char *chk, const char *real, unsigned short is_b64)
 			free(salt);
 			return(-1);
 		}
+#endif /* LMS_HARDCORE_ALLOC */
 		memset(prehash, 0, prelen);
+
+		hash = (unsigned char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+		while (!hash)
+		{
+			hash = (unsigned char *)malloc(33);
+		}
+#else
 		hash = (unsigned char *)malloc(33);
 		if (!hash)
 		{
@@ -278,6 +359,7 @@ int lms_passwords_check(char *chk, const char *real, unsigned short is_b64)
 			free(prehash);
 			return(-1);
 		}
+#endif /* LMS_HARDCORE_ALLOC */
 		memset(hash, 0, 33);
 
 		snprintf(prehash, prelen, "%s%s", salt, chk);
@@ -314,6 +396,13 @@ int lms_passwords_check(char *chk, const char *real, unsigned short is_b64)
 
 		x = (unsigned char *)(real + 2);
 
+		s = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+		while (!s)
+		{
+			s = (char *)malloc(2);
+		}
+#else
 		s = (char *)malloc(2);
 		if (!s)
 		{
@@ -321,6 +410,7 @@ int lms_passwords_check(char *chk, const char *real, unsigned short is_b64)
 			free(salt);
 			return(-1);
 		}
+#endif /* LMS_HARDCORE_ALLOC */
 		s[0] = 0;
 		s[1] = 0;
 		memcpy(s, real, 1);
@@ -351,6 +441,13 @@ int lms_passwords_check(char *chk, const char *real, unsigned short is_b64)
 			return(0);
 		}
 
+		b64_salt = (unsigned char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+		while (!b64_salt)
+		{
+			b64_salt = (unsigned char *)malloc(17);
+		}
+#else
 		b64_salt = (unsigned char *)malloc(17);
 		if (!b64_salt)
 		{
@@ -358,6 +455,7 @@ int lms_passwords_check(char *chk, const char *real, unsigned short is_b64)
 			free(salt);
 			return(-1);
 		}
+#endif /* LMS_HARDCORE_ALLOC */
 		memset(b64_salt, 0, 17);
 		b64_salt_length = _lms_passwords_getsalt(x, b64_salt);
 		if (!lms_base64_decode(b64_salt, salt))
@@ -374,6 +472,13 @@ int lms_passwords_check(char *chk, const char *real, unsigned short is_b64)
 		}
 
 		prelen = strlen(chk) + 9;				/* length of string + 8 byte salt + null-terminating byte */
+		prehash = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+		while (!prehash)
+		{
+			prehash = (char *)malloc(prelen);
+		}
+#else
 		prehash = (char *)malloc(prelen);
 		if (!prehash)
 		{
@@ -381,7 +486,16 @@ int lms_passwords_check(char *chk, const char *real, unsigned short is_b64)
 			free(salt);
 			return(-1);
 		}
+#endif /* LMS_HARDCORE_ALLOC */
 		memset(prehash, 0, prelen);
+
+		hash = (unsigned char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+		while (!hash)
+		{
+			hash = (unsigned char *)malloc(33);
+		}
+#else
 		hash = (unsigned char *)malloc(33);
 		if (!hash)
 		{
@@ -390,12 +504,20 @@ int lms_passwords_check(char *chk, const char *real, unsigned short is_b64)
 			free(prehash);
 			return(-1);
 		}
+#endif /* LMS_HARDCORE_ALLOC */
 		memset(hash, 0, 33);
 
 		snprintf(prehash, prelen, "%s%s", salt, chk);
 		_lms_passwords_hash(prehash, hash);
 		free(prehash);
 
+		rhash = (unsigned char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+		while (!rhash)
+		{
+			rhash = (unsigned char *)malloc(lms_base64_dlen(strlen((char *)x)));
+		}
+#else
 		rhash = (unsigned char *)malloc(lms_base64_dlen(strlen((char *)x)));
 		if (!rhash)
 		{
@@ -404,6 +526,7 @@ int lms_passwords_check(char *chk, const char *real, unsigned short is_b64)
 			free(hash);
 			return(-1);
 		}
+#endif /* LMS_HARDCORE_ALLOC */
 		if (!lms_base64_decode(x, rhash))
 		{
 			free(ver);
@@ -463,23 +586,46 @@ int lms_passwords_encodemulti(char *indata, lms_passwords_data *outdata)
 	outdata->version = LMS_PASSWORDS_CURVER;
 
 	prelen = strlen(indata) + 9;				/* length of string + 8 byte salt + null-terminating byte */
+	prehash = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+	while (!prehash)
+	{
+		prehash = (char *)malloc(prelen);
+	}
+#else
 	prehash = (char *)malloc(prelen);
 	if (!prehash)
 	{
 		return(-1);
 	}
+#endif /* LMS_HARDCORE_ALLOC */
 	memset(prehash, 0, prelen);
 
+	salt = (unsigned char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+	while (!salt)
+	{
+		salt = (unsigned char *)malloc(9);
+	}
+#else
 	salt = (unsigned char *)malloc(9);
 	if (!salt)
 	{
 		free(prehash);
 		return(-1);
 	}
+#endif /* LMS_HARDCORE_ALLOC */
 	memset(salt, 0, 9);
 	lms_rand_get(8, salt);
 	memcpy(outdata->salt, salt, 8);
 
+	hashed = (unsigned char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+	while (!hashed)
+	{
+		hashed = (unsigned char *)malloc(33);
+	}
+#else
 	hashed = (unsigned char *)malloc(33);
 	if (!hashed)
 	{
@@ -487,6 +633,7 @@ int lms_passwords_encodemulti(char *indata, lms_passwords_data *outdata)
 		free(salt);
 		return(-1);
 	}
+#endif /* LMS_HARDCORE_ALLOC */
 	memset(hashed, 0, 33);
 
 	snprintf(prehash, prelen, "%s%s", salt, indata);
@@ -495,6 +642,13 @@ int lms_passwords_encodemulti(char *indata, lms_passwords_data *outdata)
 	memcpy(outdata->hash, hashed, 32);
 
 	b64hash_len = 65;				/* (sha256=32 * 2) + 1 for null-terminating byte */
+	b64hash = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+	while (!b64hash)
+	{
+		b64hash = (char *)malloc(b64hash_len);
+	}
+#else
 	b64hash = (char *)malloc(b64hash_len);
 	if (!b64hash)
 	{
@@ -502,12 +656,20 @@ int lms_passwords_encodemulti(char *indata, lms_passwords_data *outdata)
 		free(salt);
 		return(-1);
 	}
+#endif /* LMS_HARDCORE_ALLOC */
 	memset(b64hash, 0, b64hash_len);
 	lms_base64_encode(hashed, (unsigned char *)b64hash, 32);
 	strncpy(outdata->hash_b64, b64hash, 64);
 	free(b64hash);
 
 	b64salt_len = 17;				/* (8 * 2) + 1 for null-terminating byte */
+	b64salt = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+	while (!b64salt)
+	{
+		b64salt = (char *)malloc(b64salt_len);
+	}
+#else
 	b64salt = (char *)malloc(b64salt_len);
 	if (!b64salt)
 	{
@@ -516,6 +678,7 @@ int lms_passwords_encodemulti(char *indata, lms_passwords_data *outdata)
 		free(salt);
 		return(-1);
 	}
+#endif /* LMS_HARDCORE_ALLOC */
 	memset(b64salt, 0, b64salt_len);
 	lms_base64_encode(salt, (unsigned char *)b64salt, 8);
 	strncpy(outdata->salt_b64, b64salt, 16);
@@ -570,18 +733,35 @@ int lms_passwords_checkmulti(char *chk, lms_passwords_data *real)
 	}
 
 	prelen = strlen(chk) + 9;				/* length of string + 8 byte salt + null-terminating byte */
+	prehash = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+	while (!prehash)
+	{
+		prehash = (char *)malloc(prelen);
+	}
+#else
 	prehash = (char *)malloc(prelen);
 	if (!prehash)
 	{
 		return(-1);
 	}
+#endif /* LMS_HARDCORE_ALLOC */
 	memset(prehash, 0, prelen);
+
+	hash = (unsigned char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+	while (!hash)
+	{
+		hash = (unsigned char *)malloc(33);
+	}
+#else
 	hash = (unsigned char *)malloc(33);
 	if (!hash)
 	{
 		free(prehash);
 		return(-1);
 	}
+#endif /* LMS_HARDCORE_ALLOC */
 	memset(hash, 0, 33);
 
 	snprintf(prehash, prelen, "%s%s", real->salt, chk);
@@ -629,7 +809,19 @@ int lms_passwords_converttomulti(unsigned char *indata, lms_passwords_data *outd
 	{
 		x = indata;
 
+		iverbuf = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+		while (!iverbuf)
+		{
+			iverbuf = (char *)malloc(2);
+		}
+#else
 		iverbuf = (char *)malloc(2);
+		if (!iverbuf)
+		{
+			return(-1);
+		}
+#endif
 		memcpy(iverbuf, x, 1);
 		iverbuf[1] = 0;
 		outdata->version = (unsigned char)stringtouint(iverbuf);

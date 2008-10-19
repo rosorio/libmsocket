@@ -63,11 +63,20 @@ int lms_ssl_init()
 	SSL_library_init();
 	ERR_load_crypto_strings();
 
+	buffer = (unsigned char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+	while (!buffer)
+	{
+		buffer = (unsigned char *)malloc(LMS_SSL_SEEDLEN);
+	}
+#else
 	buffer = (unsigned char *)malloc(LMS_SSL_SEEDLEN);
 	if (!buffer)
 	{
 		return(-1);
 	}
+#endif /* LMS_HARDCORE_ALLOC */
+
 	while (RAND_status() != 1)
 	{
 		memset(buffer, 0, LMS_SSL_SEEDLEN);
@@ -210,11 +219,19 @@ int lms_ssl_startsock(MSocket *m)
 	{
 		char *ssl_error_buf;
 
+		ssl_error_buf = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+		while (!ssl_error_buf)
+		{
+			ssl_error_buf = (char *)malloc(128);
+		}
+#else
 		ssl_error_buf = (char *)malloc(128);
 		if (!ssl_error_buf)
 		{
 			return(-1);
 		}
+#endif /* LMS_HARDCORE_ALLOC */
 		memset(ssl_error_buf, 0, 128);
 		ERR_error_string_n(ERR_get_error(), ssl_error_buf, 128);
 		return(-1);
@@ -224,11 +241,19 @@ int lms_ssl_startsock(MSocket *m)
 	{
 		char *ssl_error_buf;
 
+		ssl_error_buf = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+		while (!ssl_error_buf)
+		{
+			ssl_error_buf = (char *)malloc(128);
+		}
+#else
 		ssl_error_buf = (char *)malloc(128);
 		if (!ssl_error_buf)
 		{
 			return(-1);
 		}
+#endif /* LMS_HARDCORE_ALLOC */
 		memset(ssl_error_buf, 0, 128);
 		ERR_error_string_n(ERR_get_error(), ssl_error_buf, 128);
 		SSL_free(s);
@@ -453,11 +478,19 @@ int lms_ssl_read(MSocket *m)
 	callpfunc = 0;
 	bufsz = 1024;
 
+	c = (unsigned char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+	while (!c)
+	{
+		c = (unsigned char *)malloc(bufsz);
+	}
+#else
 	c = (unsigned char *)malloc(bufsz);
 	if (!c)
 	{
 		return(-1);
 	}
+#endif /* LMS_HARDCORE_ALLOC */
 	memset(c, 0, bufsz);
 
 	if ((m->recvQ_sz > 0) && m->recvQ)
@@ -479,12 +512,20 @@ int lms_ssl_read(MSocket *m)
 	}
 	else
 	{
+		m->recvQ = (unsigned char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+		while (!m->recvQ)
+		{
+			m->recvQ = (unsigned char *)malloc(bufsz);
+		}
+#else
 		m->recvQ = (unsigned char *)malloc(bufsz);
 		if (!m->recvQ)
 		{
 			free(c);
 			return(-1);
 		}
+#endif /* LMS_HARDCORE_ALLOC */
 		m->recvQ_sz = bufsz;
 	}
 
@@ -518,11 +559,19 @@ int lms_ssl_read(MSocket *m)
 				{
 					char *ssl_error_buf;
 
+					ssl_error_buf = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+					while (!ssl_error_buf)
+					{
+						ssl_error_buf = (char *)malloc(128);
+					}
+#else
 					ssl_error_buf = (char *)malloc(128);
 					if (!ssl_error_buf)
 					{
 						return(-1);
 					}
+#endif /* LMS_HARDCORE_ALLOC */
 					memset(ssl_error_buf, 0, 128);
 					ERR_error_string_n(ERR_get_error(), ssl_error_buf, 128);
 					free(ssl_error_buf);
@@ -606,11 +655,19 @@ int lms_ssl_handshake(MSocket *m)
 			{
 				char *ssl_error_buf;
 
+				ssl_error_buf = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+				while (!ssl_error_buf)
+				{
+					ssl_error_buf = (char *)malloc(128);
+				}
+#else
 				ssl_error_buf = (char *)malloc(128);
 				if (!ssl_error_buf)
 				{
 					return(-1);
 				}
+#endif /* LMS_HARDCORE_ALLOC */
 				memset(ssl_error_buf, 0, 128);
 				ERR_error_string_n(ERR_get_error(), ssl_error_buf, 128);
 				free(ssl_error_buf);
@@ -712,11 +769,19 @@ int lms_ssl_flushq(MSocket *m)
 				{
 					char *ssl_error_buf;
 
+					ssl_error_buf = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+					while (!ssl_error_buf)
+					{
+						ssl_error_buf = (char *)malloc(128);
+					}
+#else
 					ssl_error_buf = (char *)malloc(128);
 					if (!ssl_error_buf)
 					{
 						return(-1);
 					}
+#endif /* LMS_HARDCORE_ALLOC */
 					memset(ssl_error_buf, 0, 128);
 					ERR_error_string_n(ERR_get_error(), ssl_error_buf, 128);
 					free(ssl_error_buf);
@@ -817,19 +882,36 @@ lms_ssl_store *_lms_ssl_loadfiles(X509 *ca, const char *path)
 	char *privpath;
 	lms_ssl_store *ks;
 
+	pubpath = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+	while (!pubpath)
+	{
+		pubpath = (char *)malloc(MAXPATHLEN + 1);
+	}
+#else
 	pubpath = (char *)malloc(MAXPATHLEN + 1);
 	if (!pubpath)
 	{
 		return((lms_ssl_store *)NULL);
 	}
+#endif /* LMS_HARDCORE_ALLOC */
 	memset(pubpath, 0, (MAXPATHLEN + 1));
 	snprintf(pubpath, MAXPATHLEN, "%s.pub", path);
+
+	privpath = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+	while (!privpath)
+	{
+		privpath = (char *)malloc(MAXPATHLEN + 1);
+	}
+#else
 	privpath = (char *)malloc(MAXPATHLEN + 1);
 	if (!privpath)
 	{
 		free(pubpath);
 		return((lms_ssl_store *)NULL);
 	}
+#endif /* LMS_HARDCORE_ALLOC */
 	memset(privpath, 0, (MAXPATHLEN + 1));
 	snprintf(privpath, MAXPATHLEN, "%s.priv", path);
 

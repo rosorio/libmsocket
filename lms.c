@@ -145,7 +145,7 @@ int lms_proxyset(unsigned short type, char *host, int port)
 #ifdef LMS_HARDCORE_ALLOC
 		while (!lms_proxy_ip)
 		{
-			lms_proxy_ip = (char *)malloc();
+			lms_proxy_ip = (char *)malloc(LMS_LEN_V4ADDR + 1);
 		}
 #else
 		lms_proxy_ip = (char *)malloc(LMS_LEN_V4ADDR + 1);

@@ -148,34 +148,58 @@ MSocket *lms_socket_create(uint8_t type)
 
 	if ((type == LMSTYPE_LOCALLISTEN) || (type == LMSTYPE_LOCALCLIENT))
 	{
+		ptr->localhost = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+		while (!ptr->localhost)
+		{
+			ptr->localhost = (char *)malloc(MAXPATHLEN);
+		}
+#else
 		ptr->localhost = (char *)malloc(MAXPATHLEN);
 		if (!ptr->localhost)
 		{
 			free(ptr);
 			return((MSocket *)NULL);
 		}
+#endif /* LMS_HARDCORE_ALLOC */
 		memset(ptr->localhost, 0, MAXPATHLEN);
 	}
 	else if ((type == LMSTYPE_LISTEN4) || (type == LMSTYPE_STREAM4) || (type == LMSTYPE_DGRAM4))
 	{
 		/* Space for an IPv4 address */
+		ptr->localhost = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+		while (!ptr->localhost)
+		{
+			ptr->localhost = (char *)malloc(LMS_LEN_V4ADDR);
+		}
+#else
 		ptr->localhost = (char *)malloc(LMS_LEN_V4ADDR);
 		if (!ptr->localhost)
 		{
 			free(ptr);
 			return((MSocket *)NULL);
 		}
+#endif /* LMS_HARDCORE_ALLOC */
 		memset(ptr->localhost, 0, LMS_LEN_V4ADDR);
 	}
 	else if ((type == LMSTYPE_LISTEN6) || (type == LMSTYPE_STREAM6) || (type == LMSTYPE_DGRAM6))
 	{
 		/* Space for an IPv6 address */
+		ptr->localhost = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+		while (!ptr->localhost)
+		{
+			ptr->localhost = (char *)malloc(LMS_LEN_V6ADDR);
+		}
+#else
 		ptr->localhost = (char *)malloc(LMS_LEN_V6ADDR);
 		if (!ptr->localhost)
 		{
 			free(ptr);
 			return((MSocket *)NULL);
 		}
+#endif /* LMS_HARDCORE_ALLOC */
 		memset(ptr->localhost, 0, LMS_LEN_V6ADDR);
 	}
 	else
@@ -187,6 +211,13 @@ MSocket *lms_socket_create(uint8_t type)
 	if ((type == LMSTYPE_STREAM4) || (type == LMSTYPE_DGRAM4))
 	{
 		/* Space for an IPv4 address */
+		ptr->remotehost = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+		while (!ptr->remotehost)
+		{
+			ptr->remotehost = (char *)malloc(LMS_LEN_V4ADDR);
+		}
+#else
 		ptr->remotehost = (char *)malloc(LMS_LEN_V4ADDR);
 		if (!ptr->remotehost)
 		{
@@ -197,11 +228,19 @@ MSocket *lms_socket_create(uint8_t type)
 			free(ptr);
 			return((MSocket *)NULL);
 		}
+#endif /* LMS_HARDCORE_ALLOC */
 		memset(ptr->remotehost, 0, LMS_LEN_V4ADDR);
 	}
 	else if ((type == LMSTYPE_STREAM6) || (type == LMSTYPE_DGRAM6))
 	{
 		/* Space for an IPv6 address */
+		ptr->remotehost = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+		while (!ptr->remotehost)
+		{
+			ptr->remotehost = (char *)malloc(LMS_LEN_V6ADDR);
+		}
+#else
 		ptr->remotehost = (char *)malloc(LMS_LEN_V6ADDR);
 		if (!ptr->remotehost)
 		{
@@ -212,6 +251,7 @@ MSocket *lms_socket_create(uint8_t type)
 			free(ptr);
 			return((MSocket *)NULL);
 		}
+#endif /* LMS_HARDCORE_ALLOC */
 		memset(ptr->remotehost, 0, LMS_LEN_V6ADDR);
 	}
 	else
@@ -243,12 +283,20 @@ MSocket *lms_socket_create(uint8_t type)
 	 * Stuff for the reverse DNS resolver.
 	 */
 	/* ptr->addr is the remote address, and is only set once we start doing a reverse DNS lookup */
+	ptr->addr = (struct in_addr *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+	while (!ptr->addr)
+	{
+		ptr->addr = (struct in_addr *)malloc(sizeof(struct in_addr));
+	}
+#else
 	ptr->addr = (struct in_addr *)malloc(sizeof(struct in_addr));
 	if (!ptr->addr)
 	{
 		free(ptr);
 		return((MSocket *)NULL);
 	}
+#endif /* LMS_HARDCORE_ALLOC */
 	memset(ptr->addr, 0, sizeof(struct in_addr));
 	/* This is not usually set; it is used between the first and second phase of reverse DNS lookup prior to the verification that the PTR is valid */
 	ptr->possible_revdns = (char *)NULL;
@@ -1060,11 +1108,19 @@ int lms_socket_read(MSocket *m)
 	callpfunc = 0;
 	bufsz = 1024;
 
+	c = (unsigned char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+	while (!c)
+	{
+		c = (unsigned char *)malloc(bufsz);
+	}
+#else
 	c = (unsigned char *)malloc(bufsz);
 	if (!c)
 	{
 		return(-1);
 	}
+#endif /* LMS_HARDCORE_ALLOC */
 	memset(c, 0, bufsz);
 
 	if ((m->recvQ_sz > 0) && m->recvQ)
@@ -1086,12 +1142,20 @@ int lms_socket_read(MSocket *m)
 	}
 	else
 	{
+		m->recvQ = (unsigned char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+		while (!m->recvQ)
+		{
+			m->recvQ = (unsigned char *)malloc(bufsz);
+		}
+#else
 		m->recvQ = (unsigned char *)malloc(bufsz);
 		if (!m->recvQ)
 		{
 			free(c);
 			return(-1);
 		}
+#endif /* LMS_HARDCORE_ALLOC */
 		m->recvQ_sz = bufsz;
 	}
 
@@ -1315,11 +1379,19 @@ int lms_socket_appendq(MSocket *m, unsigned char *data, size_t data_len)
 	}
 	else
 	{
+		m->sendQ = (unsigned char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+		while (!m->sendQ)
+		{
+			m->sendQ = (unsigned char *)malloc(data_len);
+		}
+#else
 		m->sendQ = (unsigned char *)malloc(data_len);
 		if (!m->sendQ)
 		{
 			return(-1);
 		}
+#endif /* LMS_HARDCORE_ALLOC */
 		m->sendQ_sz = data_len;
 		lms_str_copy(data, m->sendQ, data_len);
 		m->sendQ_len = data_len;
@@ -1357,11 +1429,20 @@ int lms_socket_clearsq(MSocket *m, ssize_t len)
 
 		return(0);
 	}
+
+	p = (unsigned char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+	while (!p)
+	{
+		p = (unsigned char *)malloc(m->sendQ_len);
+	}
+#else
 	p = (unsigned char *)malloc(m->sendQ_len);
 	if (!p)
 	{
 		return(-1);
 	}
+#endif /* LMS_HARDCORE_ALLOC */
 	memcpy(p, m->sendQ, m->sendQ_len);
 #ifdef HAVE_REALLOCF
 	m->sendQ = reallocf(m->sendQ, newlen);

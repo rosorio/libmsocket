@@ -65,11 +65,20 @@ int lms_dns_init()
 	lms_dns_activequeries = 0;
 
 #if defined(LMS_MAXDNSSTATIC) && (LMS_MAXDNSSTATIC > 0)
-	_lms_dns_statictable = (lms_DNSCache **)calloc(LMS_MAXDNSSTATIC, sizeof(lms_DNSCache));
+	_lms_dns_statictable = (lms_DNSCache **)NULL;
+# ifdef LMS_HARDCORE_ALLOC
+	while (!_lms_dns_statictable)
+	{
+		_lms_dns_statictable = (lms_DNSCache **)calloc(LMS_MAXDNSSTATIC, sizeof(lms_DNSCache *));
+	}
+# else
+	_lms_dns_statictable = (lms_DNSCache **)calloc(LMS_MAXDNSSTATIC, sizeof(lms_DNSCache *));
 	if (!_lms_dns_statictable)
 	{
 		return(-1);
 	}
+# endif /* LMS_HARDCORE_ALLOC */
+
 	for (i = 0; i < LMS_MAXDNSSTATIC; ++i)
 	{
 		_lms_dns_statictable[i] = (lms_DNSCache *)NULL;
@@ -77,7 +86,14 @@ int lms_dns_init()
 #endif /* defined(LMS_MAXDNSSTATIC) && (LMS_MAXDNSSTATIC > 0) */
 
 #ifndef LMS_NODNSCACHE
-	_lms_dns_cache = (lms_DNSCache **)calloc(LMS_MAXDNSCACHE, sizeof(lms_DNSCache));
+	_lms_dns_cache = (lms_DNSCache **)NULL;
+# ifdef LMS_HARDCORE_ALLOC
+	while (!_lms_dns_cache)
+	{
+		_lms_dns_cache = (lms_DNSCache **)calloc(LMS_MAXDNSCACHE, sizeof(lms_DNSCache));
+	}
+# else
+	_lms_dns_cache = (lms_DNSCache **)calloc(LMS_MAXDNSCACHE, sizeof(lms_DNSCache *));
 	if (!_lms_dns_cache)
 	{
 		return(-1);
@@ -86,15 +102,24 @@ int lms_dns_init()
 	{
 		_lms_dns_cache[i] = (lms_DNSCache *)NULL;
 	}
+# endif /* LMS_HARDCORE_ALLOC */
 #endif /* LMS_NODNSCACHE */
 
 	while (RAND_status() != 1)
 	{
+		buffer = (unsigned char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+		while (!buffer)
+		{
+			buffer = (unsigned char *)malloc(LMS_SSL_SEEDLEN);
+		}
+#else
 		buffer = (unsigned char *)malloc(LMS_SSL_SEEDLEN);
 		if (!buffer)
 		{
 			return(-1);
 		}
+#endif /* LMS_HARDCORE_ALLOC */
 		memset(buffer, 0, LMS_SSL_SEEDLEN);
 
 		if (lms_rand_get(LMS_SSL_SEEDLEN, buffer) < 0)
@@ -274,11 +299,19 @@ void lms_dns_recv(int result, char type, int count, int ttl, void *addresses, vo
 		return;
 	}
 
+	ipstr = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+	while (!ipstr)
+	{
+		ipstr = (char *)malloc(16);
+	}
+#else
 	ipstr = (char *)malloc(16);
 	if (!ipstr)
 	{
 		return;
 	}
+#endif /* LMS_HARDCORE_ALLOC */
 	memset(ipstr, 0, 16);
 
 	raddrS = (uint32_t *)addresses;
@@ -360,11 +393,19 @@ int lms_dns_findrev(MSocket *m)
 			if (strcmp(c->ip, m->remotehost) == 0)
 			{
 				m->flags &= ~LMSFLG_WAITDNS;
+				m->remotedns = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+				while (!m->remotedns)
+				{
+					m->remotedns = (char *)malloc(strlen(cacheent->host) + 1);
+				}
+#else
 				m->remotedns = (char *)malloc(strlen(cacheent->host) + 1);
 				if (!m->remotedns)
 				{
 					return(-1);
 				}
+#endif /* LMS_HARDCORE_ALLOC */
 				memset(m->remotedns, 0, (strlen(cacheent->host) + 1));
 				strncpy(m->remotedns, cacheent->host, strlen(cacheent->host));
 
@@ -390,11 +431,19 @@ int lms_dns_findrev(MSocket *m)
 		}
 		else
 		{
+			m->possible_revdns = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+			while (!m->possible_revdns)
+			{
+				m->possible_revdns = (char *)malloc(strlen(cacheent->host) + 1);
+			}
+#else
 			m->possible_revdns = (char *)malloc(strlen(cacheent->host) + 1);
 			if (!m->possible_revdns)
 			{
 				return(-1);
 			}
+#endif /* LMS_HARDCORE_ALLOC */
 			memset(m->possible_revdns, 0, (strlen(cacheent->host) + 1));
 			strncpy(m->possible_revdns, cacheent->host, strlen(cacheent->host));
 			lms_dns_activequeries++;
@@ -499,11 +548,19 @@ void lms_dns_recvrevA(int result, char type, int count, int ttl, void *addresses
 	}
 
 	ret_addr = (char *)addresses;	/* searched for PTR, should be a hostname if it exists */
+	m->possible_revdns = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+	while (!m->possible_revdns)
+	{
+		m->possible_revdns = (char *)malloc(strlen(ret_addr) + 1);
+	}
+#else
 	m->possible_revdns = (char *)malloc(strlen(ret_addr) + 1);
 	if (!m->possible_revdns)
 	{
 		return;
 	}
+#endif /* LMS_HARDCORE_ALLOC */
 	memset(m->possible_revdns, 0, (strlen(ret_addr) + 1));
 	strncpy(m->possible_revdns, ret_addr, strlen(ret_addr));
 
@@ -680,11 +737,19 @@ void lms_dns_recvrevB(int result, char type, int count, int ttl, void *addresses
 	}
 
 	/* Convert the IP in addresses to a string, then compare it against m->remotehost, and if it matches, set positive cache and m->remotedns */
-	ipstr = (char *)malloc(16);
+	ipstr = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+	while (!ipstr)
+	{
+		ipstr = (char *)malloc(LMS_LEN_V4ADDR);
+	}
+#else
+	ipstr = (char *)malloc(LMS_LEN_V4ADDR);
 	if (!ipstr)
 	{
 		return;
 	}
+#endif /* LMS_HARDCORE_ALLOC */
 	memset(ipstr, 0, 16);
 
 	raddrS = (uint32_t *)addresses;
@@ -824,11 +889,19 @@ int _lms_dns_addcache(unsigned short type, char *ip, char *hostname, time_t toex
 		neg = 0;
 	}
 
+	cache = (lms_DNSCache *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+	while (!cache)
+	{
+		cache = (lms_DNSCache *)malloc(sizeof(lms_DNSCache));
+	}
+#else
 	cache = (lms_DNSCache *)malloc(sizeof(lms_DNSCache));
 	if (!cache)
 	{
 		return(-1);
 	}
+#endif /* LMS_HARDCORE_ALLOC */
 	memset(cache, 0, sizeof(lms_DNSCache));
 
 	slot = _lms_dns_getcacheslot();
@@ -839,12 +912,20 @@ int _lms_dns_addcache(unsigned short type, char *ip, char *hostname, time_t toex
 	}
 
 	cache->type = type;
+	cache->host = (char *)NULL;
+#ifdef LMS_HARDCORE_ALLOC
+	while (!cache->host)
+	{
+		cache->host = (char *)malloc(strlen(hostname) + 1);
+	}
+#else
 	cache->host = (char *)malloc(strlen(hostname) + 1);
 	if (!cache->host)
 	{
 		free(cache);
 		return(-1);
 	}
+#endif /* LMS_HARDCORE_ALLOC */
 	memset(cache->host, 0, (strlen(hostname) + 1));
 	if (hostname)
 	{
