@@ -134,7 +134,7 @@ lms_addrbytes *lms_str_getbytes(in_addr_t ip, int port)
 		return((lms_addrbytes *)NULL);
 	}
 
-	if ((ip > 0) && (ip != IN_ADDR_NONE))
+	if ((ip > 0) && (ip != INADDR_NONE))
 	{
 	}
 

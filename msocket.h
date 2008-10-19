@@ -133,6 +133,11 @@ typedef struct _abstract Abstract;
 typedef void (*abstract_callback)(struct _abstract *);
 
 /*
+ * Declare this up here for use inside of MSocket
+ */
+struct _MSocket_UDPMsg;
+
+/*
  * MSocket is the structure utilized by our socket abstraction layer
  */
 struct _MSocket

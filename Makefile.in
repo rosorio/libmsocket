@@ -22,7 +22,7 @@ all:	$(OBJ)
 
 build:	all
 
-install:	all
+install:
 	$(INSTALL) -m 0644 msocket.h $(TARGET)/include/msocket.h
 	$(INSTALL) -m 0644 msocketutils.h $(TARGET)/include/msocketutils.h
 	$(INSTALL) -m 0644 libmsocket.so $(TARGET)/lib/libmsocket.so.0.1
@@ -53,6 +53,10 @@ example:
 
 clean:
 	rm -f $(OBJ) $(ARLIB) $(SOLIB)
+
+distclean:	clean
+	rm -f Makefile localconfig.h config.log config.status
+
 
 base64.o:	base64.c msocketutils.h msocket-internal.h
 conn.o:		conn.c msocket.h msocket-internal.h

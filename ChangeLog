@@ -4,6 +4,7 @@
  * Add SOCKS5 proxy support (LMSOPTION_SOCKS)
  * Manual pages for each function are now available
  * More appropriate, less-restrictive licensing terms
+ * Hardcore allocator working (--enable-hcalloc)
 
 +++ Changes from version 0.3 to version 0.4
  * Now using autoconf to determine if a couple of things exist

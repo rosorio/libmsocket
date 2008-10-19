@@ -184,6 +184,11 @@ typedef struct _abstract Abstract;
 typedef void (*abstract_callback)(struct _abstract *);
 
 /*
+ * Declare this up here for use inside of MSocket
+ */
+struct _MSocket_UDPMsg;
+
+/*
  * MSocket is the structure utilized by our socket abstraction layer
  */
 struct _MSocket
@@ -355,8 +360,8 @@ extern int lms_dns_getip(const char *host, char *buf, size_t buf_len);
 extern int lms_dns_gethost(const char *ip, char *buf, size_t buf_len);
 extern size_t lms_file_readln(int fd, char *buf, size_t buf_len);
 extern int lms_file_writepid(const char *fn, pid_t pid);
-extern short lms_file_icanrw(struct stat *fs);
-extern short lms_file_icanr(struct stat *fs);
+extern int8_t lms_file_icanrw(struct stat *fs);
+extern int8_t lms_file_icanr(struct stat *fs);
 
 /* conn.c */
 extern int lms_conn_accept(MSocket *l);
