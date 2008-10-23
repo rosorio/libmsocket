@@ -338,7 +338,7 @@ int lms_socket_close(MSocket *ptr)
 		ptr->func_w(ptr);
 	}
 
-	if (ptr->flags & LMSFLG_SSL)
+	if ((ptr->flags & LMSFLG_SSL) && ((ptr->type == LMSTYPE_STREAM4) || (ptr->type == LMSTYPE_STREAM6) || (ptr->type == LMSTYPE_LOCALCLIENT)))
 	{
 		lms_ssl_closesock(ptr);
 	}
