@@ -109,7 +109,7 @@
 # define LMS_BACKLOG			SOMAXCONN
 
 # define LMS_LEN_V4ADDR			16
-# define LMS_LEN_V6ADDR			0
+# define LMS_LEN_V6ADDR			24
 
 # define LMS_MAXKEEPALIVE		600		/* Ten minutes before we blow away an idle socket */
 

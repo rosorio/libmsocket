@@ -1,9 +1,9 @@
-dnl NGCast configure.ac
+dnl libmsocket configure.ac
 dnl 
 
 AC_PREREQ(2.57)
 
-AC_COPYRIGHT([Copyright 2008 Matt D. Harris - See LICENSE for more details])
+AC_COPYRIGHT([Copyright 2008 Matt Harris - See LICENSE for more details])
 
 AC_INIT([libmsocket],[0.5])
 

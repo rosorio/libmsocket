@@ -38,7 +38,7 @@
 # define LMS_VERSION_INT		0x000050
 
 # define LMS_LEN_V4ADDR			16
-# define LMS_LEN_V6ADDR			0
+# define LMS_LEN_V6ADDR			24
 
 # define LMS_CONNTIMEOUT		60
 
