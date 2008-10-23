@@ -158,7 +158,9 @@
 # define LMSPROXY_HTTP			2
 
 # define LMS_SSL_SEEDLEN		1024
-# undef LMS_SSLV2
+# ifdef LMS_SSLV2
+#  undef LMS_SSLV2
+# endif /* LMS_SSLV2 */
 
 # define ABSTRACT_NOTHING		0
 # define ABSTRACT_STRING		1

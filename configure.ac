@@ -239,7 +239,7 @@ if test "$cf_enable_throttle" = "yes"; then
 fi
 
 if test "$cf_enable_sslv2" = "yes"; then
-  AC_DEFINE([LMS_SSL_V2], [1])
+  AC_DEFINE([LMS_SSLV2], [1])
 fi
 
 if test "$cf_enable_tor" = "yes"; then
