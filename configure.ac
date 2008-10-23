@@ -22,23 +22,23 @@ AC_SUBST(STDOUT)
 
 AC_ARG_ENABLE(debug,
 [AC_HELP_STRING([--enable-debug],[Enable compile-time and run-time debugging])],
-[cf_debug="1"], 
+[cf_enable_debug=$enableval], 
 [cf_debug="0"])
 AC_ARG_ENABLE(throttling,
 [AC_HELP_STRING([--enable-throttling],[Enable throttling interface])],
-[AC_DEFINE([LMS_THROTTLE_ENABLE], [1])],
+[cf_enable_throttle=$enableval],
 [unusedvariable="0"])
 AC_ARG_ENABLE(sslv2,
 [AC_HELP_STRING([--enable-sslv2],[NOT RECOMMENDED: enable this if you have to support SSL v2])],
-[AC_DEFINE([LMS_SSL_V2], [1])],
+[cf_enable_sslv2=$enableval],
 [unusedvariable="0"])
 AC_ARG_ENABLE(tor,
 [AC_HELP_STRING([--enable-tor],[Enable support for Tor anonymous proxying])],
-[AC_DEFINE([LMS_ENABLE_TOR], [1])],
+[cf_enable_tor=$enableval],
 [unusedvariable="0"])
 AC_ARG_ENABLE(hcalloc,
 [AC_HELP_STRING([--enable-hcalloc],[Enable hardcore allocation])],
-[AC_DEFINE([LMS_HARDCORE_ALLOC], [1])],
+[cf_enable_hcalloc=$enableval],
 [unusedvariable="0"])
 
 AC_ARG_WITH(openssl,
@@ -222,6 +222,28 @@ else
   prefix=`echo $prefix | sed 's/\/$//'`
   PREFIX=$prefix
   AC_DEFINE_UNQUOTED(MY_PREFIX, "$prefix", [Prefix where the framework is to be installed.])
+fi
+
+if test "$cf_enable_debug" = "yes"; then
+  cf_debug=1
+else
+  cf_debug=0
+fi
+
+if test "$cf_enable_hcalloc" = "yes"; then
+  AC_DEFINE([LMS_HARDCORE_ALLOC], [1])
+fi
+
+if test "$cf_enable_throttle" = "yes"; then
+  AC_DEFINE([LMS_THROTTLE_ENABLE], [1])
+fi
+
+if test "$cf_enable_sslv2" = "yes"; then
+  AC_DEFINE([LMS_SSL_V2], [1])
+fi
+
+if test "$cf_enable_tor" = "yes"; then
+  AC_DEFINE([LMS_ENABLE_TOR], [1])
 fi
 
 if test "$cf_debug" = "1"; then
