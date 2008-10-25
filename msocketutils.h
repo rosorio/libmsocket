@@ -53,12 +53,4 @@ extern void lms_str_ocopy(void *src, void *dst, size_t len, uint32_t offset);
 extern unsigned char *lms_base64_encode(unsigned char *src, unsigned char *dst, size_t len);
 extern unsigned char *lms_base64_decode(unsigned char *src, unsigned char *dst);
 
-/* passwords.c */
-extern int lms_passwords_encode(char *indata, char *outdata, unsigned short use_b64);
-extern int lms_passwords_check(char *chk, const char *real, unsigned short is_b64);
-extern size_t lms_passwords_len(unsigned short use_b64);
-extern int lms_passwords_encodemulti(char *indata, lms_passwords_data *outdata);
-extern int lms_passwords_checkmulti(char *chk, lms_passwords_data *real);
-extern int lms_passwords_converttomulti(unsigned char *indata, lms_passwords_data *outdata, unsigned short is_b64);
-
 #endif /* INCLUDED_MSOCKETUTILS_H */
