@@ -43,11 +43,11 @@ AC_ARG_ENABLE(hcalloc,
 
 AC_ARG_WITH(openssl,
 [AC_HELP_STRING([--with-openssl=DIR],[Specify OpenSSL path.])],
-[cf_enable_openssl=$enableval],
+[cf_enable_openssl=$with_openssl],
 [cf_enable_openssl="auto"])
 AC_ARG_WITH(libevent,
 [AC_HELP_STRING([--with-libevent=DIR],[Specify libevent path.])],
-[cf_enable_libevent=$enableval],
+[cf_enable_libevent=$with_libevent],
 [cf_enable_libevent="auto"])
 
 AC_ISC_POSIX
